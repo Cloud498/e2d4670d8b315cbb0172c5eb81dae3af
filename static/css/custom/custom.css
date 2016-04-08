@@ -1,0 +1,53 @@
+.content {
+	padding: 30px;
+}
+
+.input {
+	margin: 5px;
+}
+
+article {
+	background-color: rgb(242, 242, 242);
+	padding: 30px;
+	margin: 30px;
+	border: 1px solid black;
+	border-radius: 20px;
+	box-shadow: 4px 4px 4px #888888;
+}
+
+.search-result .row {
+	max-height: 500px;
+}
+
+.productImage {
+	text-align: center;
+}
+
+.productImage img {
+	max-height: 200px;
+	max-width: 400px;
+}
+
+.product-info .image_url,
+.product-info .pid,
+.product-info .user_id ,
+.product-info .ppacc {
+	display:none;
+}
+
+.product-info p {
+	margin: 0;
+}
+
+.viewReview a {
+	background-color: #d9d9d9;
+	padding: 10px 20px;
+	display: block;
+	border-radius: 5px;
+	text-decoration: none;
+	color: black;
+}
+.viewReview {
+	width: 256px;
+	margin:auto;
+}

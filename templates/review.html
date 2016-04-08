@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Reviews for {{pname}}</title>
+{% endblock %}
+
+{% block content %}
+
+  <div class="row">
+    <h4 style="float:right"><a href="{{prod_url}}">
+        <span class="glyphicon glyphicon-share-alt"></span>Click here to return to product {{pname}} </a></h4>
+  </div>
+
+   <h2 >Review created successfully for {{pname}}</h2>
+    <h4>
+      <div class="form-group">
+        <div class="row">
+          <label class="col-md-6  col-lg-6" for="usr">Reviewer: {{review.username}}</label>
+          <label class="col-md-6  col-lg-6" for="rating">Rating: {{review.rating}}</label>
+        </div>
+        <label for="comment">Comment:</label>
+        <textarea class="form-control" rows="5" readonly="readonly" id="comment">{{review.comment}}</textarea>
+      </div>
+      <hr/>
+{% endblock %}

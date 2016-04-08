@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>My Transactions</title>
+{% endblock %}
+
+{% block content %}
+    <h3>My Transactions</h3>
+    {% if notification %}
+   		<p><b>Notification</b>: {{notification}}</p>
+   	{% endif %}
+    {% if error_message %}
+      <p><b>Error</b>: {{error_message}}</p>
+    {% endif %}
+		<table class="table table-striped">
+		    <thead>
+		        <tr>
+		            <th>Product</th>
+		            <th>Rentee</th>
+		            <th>Rentee Email</th>
+		            <th>Rentee Phone Number</th>
+		            <th>Meet Point</th>
+		            <th>Pick Up Date</th>
+		            <th>Return Date</th>
+		            <th>Amount Paid</th>
+		        </tr>
+		    </thead>
+		    <tbody>
+		    	{% if transactions %}
+			    	{% for transaction in transactions %}
+			        <tr>
+			            <td>{{transaction.product}}</td>
+			            <td>{{transaction.rentee_id}}</td>
+			            <td>{{transaction.email}}</td>
+			            <td>{{transaction.phone_number}}</td>
+			            <td>{{transaction.meet_point}}</td>
+			            <td>{{transaction.pickupD}}</td>
+			            <td>{{transaction.returnD}}</td>
+			            <td>{{transaction.amount_paid}}</td>
+			        </tr>
+			        {% endfor %}
+			    {% else %}
+			    	<tr>
+			            <td colspan="8"> <h2 style="text-align: center"> No transactions were found  </h2> </td>
+			        </tr>
+			    {% endif %}
+		    </tbody>
+		</table>
+		<div class="row">
+			<form class="form-horizontal" action="/admin/view_transactions?action=add" method="post">
+				<input class="btn primary" type="submit" value="Add sample data"/>
+			</form>
+
+		</div>
+		<div class="row">
+			<form class="form-horizontal" action="/admin/view_transactions?action=delete" method="post">
+				<input class="btn primary" type="submit" value="Delete"/>
+			</form>
+		</div>
+{% endblock %}
+
+

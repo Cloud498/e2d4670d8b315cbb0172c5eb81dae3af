@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Profile</title>
+{% endblock %}
+
+{% block content %}
+    <h3>My Profile</h3>
+    {% if notification %}
+   		<p><b>Notification</b>: {{notification}}</p>
+   	{% endif %}
+    {% if error_message %}
+      <p><b>Error</b>: {{error_message}}</p>
+    {% endif %}
+    <div class="row">
+		<form class="form-horizontal" action="/admin/user_profile" method="post">
+			<div class="form-group col-sm-6 col-md-4  col-lg-3">
+				<label for="nickname">Nickname:</label>
+				<div class="input">
+					<input class="form-control" type="text" name="nickname" value="{{nickname}}" />
+				</div>
+			</div>
+			<div class="form-group col-sm-6 col-md-4 col-lg-3">
+				<label for="email">Email:</label>
+				<div class="input">
+					<input class="form-control" type="text" name="email" value="{{email}}" />
+				</div>
+			</div>
+			<div class="form-group col-sm-6 col-md-4  col-lg-3">
+				<label for="phone_number">Phone Number:</label>
+				<div class="input">
+					<input class="form-control" type="text" name="phone_number" value="{{phone_number}}"/>
+				</div>
+			</div>
+			<div class="form-group col-sm-6 col-md-4  col-lg-3">
+				<label for="meet_point">Meet Point:</label>
+				<div class="input">
+					<input class="form-control" type="text" name="meet_point" value="{{meet_point}}"/>
+				</div>
+			</div>
+			<div class="actions form-group col-sm-12 col-md-12 col-lg-12">
+					<input class="btn primary" type="submit" value="Update"/>
+					<input type="reset" class="btn primary"  name="reviewreset" value="Clear"/>
+			</div>
+
+		</form>
+    	<form name="searchbyuserform" class="form-horizontal col-xs-12 col-md-12 col-sm-12 col-lg-12" action="/psearch?sort=relevance&query={{ user_id }}" method="post">
+            <div class="row">
+                <div class=" col-xs-1 col-md-1 col-sm-1 col-lg-1">
+                    <input type="submit" class="btn primary"  name="psearchsub" value="Show Listings of this User"/>
+                </div>
+            </div>
+        </form>
+	</div>
+{% endblock %}
+

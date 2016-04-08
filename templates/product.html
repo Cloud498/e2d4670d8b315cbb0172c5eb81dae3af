@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Product Information for {{pname}}</title>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">google.load("jquery", "1"); google.load("jqueryui", "1");</script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?sensor=false"
+      type="text/javascript"></script>
+    <script type="text/javascript" src="/static/js/StyledMarker.js"></script>
+{% endblock %}
+
+{% block content %}
+	 <h2>Product Information for {{pname}}</h2>
+	 <div class="row col-md-12 col-lg-12">
+  		<div class="form-group col-md-6 col-lg-6 productImage">
+        <img src="{{image_url}}" atl="image">
+  		</div>
+      <ul class="meta-search list-unstyled col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        <li>
+          <div class=" col-xs-6 col-sm-4 col-md-4 col-lg-4">
+            <i class="glyphicon glyphicon-tags"></i> <span> {{meetPoint}}</span>
+          </div>
+        </li>
+        <li>
+          <div class=" col-xs-6 col-sm-4 col-md-4 col-lg-4">
+            <i class="glyphicon glyphicon-user"></i> <span>{{userName}}</span>
+          </div>
+        </li>
+                  <li>
+          <div class=" col-xs-6 col-sm-4 col-md-4 col-lg-4">
+            <i class="glyphicon glyphicon-phone"></i> <span>{{phoneNumber}}</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="row col-md-12 col-lg-12">
+      <hr/>
+    </div>
+    <div class="row col-md-12 col-lg-12">
+    	<div class="product-info form-group col-md-12col-lg-12">
+    			<br/>
+          {% for field in prod_doc.fields %}
+            {% if field.value %}
+    			   <p class="{{field.name}}"><span ><b>{{field.name}}</b>: &nbsp;{{field.value}}</span> <br/>
+            {% endif %}
+          </p>
+    			{% endfor %}
+    			<br/>
+    	</div>
+      <div class="viewReview">
+        <a href="{{review_link}}">View Reviews for the Product: {{pname}}</a>
+      </div>
+    </div>
+    <div class="row col-md-12 col-lg-12">
+      <hr/>
+    </div>
+		<div class="form-group col-md-12 col-lg-12">
+			<p>
+        <form  style="margin:auto "action="/order">
+          <input type="hidden" name="pname" value="{{pname}}" />
+          <input type="hidden" name="pid" value="{{pid}}" />
+             <input type="hidden" name="ppacc" value="{{ppacc}}" />
+          <input type="hidden" name="price" value="{{price}}" />
+          Pickup Date:
+          <input type="date" name="pickupD">
+          Return Date:
+          <input type="date" name="returnD">
+          <input class="btn primary" type="submit" value="Proceed to Checkout"/>
+        </form>
+			</p>
+		</div>
+    <div class="row col-md-12 col-lg-12">
+      <div class="form-group">
+          <h4>Create a Review for {{pname}}</h4>
+          <form action="/create_review" method="post">
+            <input type="hidden" name="pid" value="{{pid}}" />
+            <input type="hidden" name="category" value="{{category}}" />
+            <input type="hidden" name="pname" value="{{pname}}" />
+            <div class="clearfix">
+              <label for="comment">review comment:</label>
+              <div class="input">
+                <textarea class="form-control" name="comment" rows="3" cols="80">{{comment}}</textarea>
+              </div>
+            </div>
+            <div class="clearfix">
+              <label for="rating">rating (1-5):</label>
+              <div class="input">
+                <input class="form-control" type="text" id="rating" name="rating" value="{{rating}}"/>
+              </div>
+            </div>
+            <div class="actions">
+              <input class="btn primary" id="subreview" name="subreview" type="submit" value="Review"/>
+              <input type="reset" class="btn primary"  name="reviewreset" value="Clear"/>
+            </div>
+          </form>
+          <hr/>
+          <form name="searchbyuserform" class="form-horizontal " action="/psearch?sort=relevance&query={{user_id}}" method="post">
+              <input type="submit" class="btn primary"  name="psearchsub" value="Show listings of the same user"/>
+          </form>
+          {% if user_is_admin %}
+          <hr/>
+          <p>Delete this product and its reviews; no undo (admin).</p>
+          <form action="/admin/delete_product" method="post">
+            <input type="hidden" name="pid" value="{{pid}}" />
+            <div class="actions">
+              <input class="btn primary" id="delete_prod" name="delete_prod" type="submit" value="Delete Product"/>
+            </div>
+          </form>
+          {% endif %}
+      </div>
+    </div>
+    <div class="row col-md-12 col-lg-12">
+      <h2> Location </h2>
+      <div id="mapbox">
+         <div id="map" style="display: none; margin: 0 0 20px 20px;width: 650px; height: 600px;border: 1px solid #6666dd;    margin: auto;">
+         </div>
+      </div>
+      <div id="noMapbox" style="display: none">
+        <h2>No Location is available</h2>
+      </div>
+    </div>
+	</div>
+	
+<script type="text/javascript">
+
+  var geocoder;
+  var map;
+  var address = '{{meetPoint}}';
+  console.log(address.length);
+  if (address.length != 0) {
+    initialize();
+  } else {
+    $('#noMapbox').css({'display': 'block'})
+  }
+  function initialize() {
+    $('#map').show();
+    geocoder = new google.maps.Geocoder();
+    var latlng = new google.maps.LatLng(-34.397, 150.644);
+    var myOptions = {
+      zoom: 14,
+      center: latlng,
+      mapTypeControl: true,
+      mapTypeControlOptions: {
+        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+      },
+      navigationControl: true,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    map = new google.maps.Map(document.getElementById("map"), myOptions);
+    if (geocoder) {
+      geocoder.geocode({
+        'address': address
+      }, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          if (status != google.maps.GeocoderStatus.ZERO_RESULTS) {
+            map.setCenter(results[0].geometry.location);
+
+            var infowindow = new google.maps.InfoWindow({
+              content: '<b>' + address + '</b>',
+              size: new google.maps.Size(150, 50)
+            });
+
+            var marker = new google.maps.Marker({
+              position: results[0].geometry.location,
+              map: map,
+              title: address,
+              visible: true,
+            });
+            google.maps.event.addListener(marker, 'click', function() {
+              infowindow.open(map, marker);
+            });
+
+            infowindow.open(map, marker);
+
+          } else {
+            alert("No results found");
+          }
+        } else {
+          alert("Geocode was not successful for the following reason: " + status);
+        }
+      });
+    }
+  }
+</script>
+ {% endblock %}

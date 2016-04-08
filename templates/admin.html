@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Administrative Actions</title>
+{% endblock %}
+
+
+{% block content %}
+
+    <h2>Administrative Actions</h2>
+
+    {% if notification %}
+      <p><b>Notification</b>: {{notification}}</p>
+    {% endif %}
+    <p></p>
+
+    <ul>
+     <li><a href="/admin/manage?action=deleteData"><b>Delete all datastore and index product data</b>.<br/>&nbsp;</li>
+
+{% endblock %}
